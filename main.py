@@ -10,7 +10,32 @@ def main():
     # Load the training dataset and validation data
     train_dataset = load_data("dataset\\train.csv")
     test_dataset = load_data("dataset\\test.csv")
-    #train_dataset.dropna(inplace=True)
+    random_forrest_model(train_dataset, test_dataset)
+
+    
+def load_data(path: str, describe: bool = False) -> DataFrame:
+    """Loads a dataset from a csv file.
+
+    Args:
+        path (str): Path to the csv file.
+        describe (bool, optional): Boolean value used to choose whether to print or not the description of the dataset. Defaults to False.
+
+    Returns:
+        DataFrame: the dataset from the csv file
+    """
+    dataset = pd.read_csv(path)
+    if describe:
+        print("Dataset details: \n", dataset.describe())
+    return dataset
+
+def random_forrest_model(train_dataset: DataFrame, test_dataset: DataFrame):
+    """Creates a random forrest model using train_dataset then fits the model, evaluates it, prints the mae
+    and makes predictions with test_dataset
+
+    Args:
+        train_dataset (DataFrame): data used for training
+        test_dataset (DataFrame): data used for validation
+    """
     # The features that will affect the house prices
     features = ['LotArea', 'YearBuilt', '1stFlrSF', '2ndFlrSF', 'FullBath', 'BedroomAbvGr', 'TotRmsAbvGrd']
     
@@ -37,22 +62,6 @@ def main():
 
     with open('models/random_forest_model.pkl', 'wb') as f:
         pickle.dump(model, f)
-
-    
-def load_data(path: str, describe: bool = False) -> DataFrame:
-    """Loads a dataset from a csv file.
-
-    Args:
-        path (str): Path to the csv file.
-        describe (bool, optional): Boolean value used to choose whether to print or not the description of the dataset. Defaults to False.
-
-    Returns:
-        DataFrame: the dataset from the csv file
-    """
-    dataset = pd.read_csv(path)
-    if describe:
-        print("Dataset details: \n", dataset.describe())
-    return dataset
 
 
 if __name__ == "__main__":
