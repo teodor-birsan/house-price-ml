@@ -2,3 +2,75 @@
  MAE for training data: 21857.15912981083 
  Prediction for new data: 
  [112695.5  151265.   184699.   ... 158175.24 139285.   225984.9 ] 
+2025-08-07 11:00:30.836609: 
+ Predictions made by the best random forrest: 
+ [121117.821  154384.36   174976.4525 ... 152990.9265 138022.495
+ 233911.9685] 
+ Mae for the best random forrest: 18943.633302674498 
+ Number of trees in the forest: 2000 
+2025-08-07 11:27:06.378574: 
+ Predictions made by the best random forrest: 
+ [120894.941      154243.03166667 175545.323      ... 152971.851
+ 138054.73333333 233197.41266667] 
+ Mae for the best random forrest: 18934.660216496344 
+ Number of trees in the forest: 3000 
+2025-08-07 11:31:11.687589: 
+ Predictions made by the best random forrest: 
+ [120865.79342857 154485.73428571 175422.43085714 ... 153057.91514286
+ 138005.87714286 233253.93628571] 
+ Mae for the best random forrest: 18931.277512595905 
+ Number of trees in the forest: 3500 
+2025-08-07 11:33:41.320356: 
+ Predictions made by the best random forrest: 
+ [120865.79342857 154485.73428571 175422.43085714 ... 153057.91514286
+ 138005.87714286 233253.93628571] 
+ Mae for the best random forrest: 18931.277512595905 
+ Number of trees in the forest: 3500 
+2025-08-07 11:36:13.029452: 
+ Predictions made by the best random forrest: 
+ [120865.79342857 154485.73428571 175422.43085714 ... 153057.91514286
+ 138005.87714286 233253.93628571] 
+ Mae for the best random forrest: 18931.277512595905 
+ Number of trees in the forest: 3500 
+2025-08-07 11:39:20.932387: 
+ Predictions made by the best random forrest: 
+ [120863.4038846  154476.31248215 175424.88089117 ... 153057.25592688
+ 138004.30448443 233264.37217938] 
+ Mae for the best random forrest: 18930.63918711387 
+ Number of trees in the forest: 3501 
+2025-08-07 11:42:20.636273: 
+ Predictions made by the best random forrest: 
+ [120863.4038846  154476.31248215 175424.88089117 ... 153057.25592688
+ 138004.30448443 233264.37217938] 
+ Mae for the best random forrest: 18930.63918711387 
+ Number of trees in the forest: 3501 
+2025-08-07 11:44:06.217121: 
+ Predictions made by the best random forrest: 
+ [120850.89240868 154466.84360731 175418.18150685 ... 153056.7788242
+ 138005.00285388 233258.58076484] 
+ Mae for the best random forrest: 18931.543336519208 
+ Number of trees in the forest: 3504 
+2025-08-07 11:48:07.806255: 
+ Predictions made by the best random forrest: 
+ [120863.4038846  154476.31248215 175424.88089117 ... 153057.25592688
+ 138004.30448443 233264.37217938] 
+ Mae for the best random forrest: 18930.63918711387 
+ Number of trees in the forest: 3501 
+2025-08-07 11:50:09.700766: 
+ Predictions made by the best random forrest: 
+ [120863.4038846  154476.31248215 175424.88089117 ... 153057.25592688
+ 138004.30448443 233264.37217938] 
+ Mae for the best random forrest: 18930.63918711387 
+ Number of trees in the forest: 3501 
+2025-08-07 11:52:43.058192: 
+ Predictions made by the best random forrest: 
+ [120863.4038846  154476.31248215 175424.88089117 ... 153057.25592688
+ 138004.30448443 233264.37217938] 
+ Mae for the best random forrest: 18930.63918711387 
+ Number of trees in the forest: 3501 
+2025-08-07 11:55:09.923476: 
+ Predictions made by the best random forrest: 
+ [120863.4038846  154476.31248215 175424.88089117 ... 153057.25592688
+ 138004.30448443 233264.37217938] 
+ Mae for the best random forrest: 18930.63918711387 
+ Number of trees in the forest: 3501 

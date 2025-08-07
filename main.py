@@ -6,12 +6,24 @@ from sklearn.model_selection import train_test_split
 from datetime import datetime
 import pickle
 
+HOUSE_FEATURES = ['MSSubClass', 'LotArea', 'OverallQual', 'OverallCond', 'YearBuilt', 'YearRemodAdd', '1stFlrSF', 
+                  '2ndFlrSF', 'LowQualFinSF', 'GrLivArea', 'FullBath', 'HalfBath', 'BedroomAbvGr', 'KitchenAbvGr', 
+                  'TotRmsAbvGrd', 'Fireplaces', 'WoodDeckSF', 'OpenPorchSF', 'EnclosedPorch', '3SsnPorch', 'ScreenPorch', 
+                  'PoolArea', 'MiscVal', 'MoSold', 'YrSold']
+TARGET_PREDICTION = "SalePrice"
+
+
 def main():
     # Load the training dataset and validation data
     train_dataset = load_data("dataset\\train.csv")
     test_dataset = load_data("dataset\\test.csv")
-    random_forrest_model(train_dataset, test_dataset)
-
+    nodes = [3501, 3504]
+    model, prediction, mae, nodes = best_random_forest(train_dataset=train_dataset,validation_data=test_dataset, nodes_list=nodes, save=True)
+    with open("log.txt", 'a') as f:
+        message = f"{datetime.now()}: \n Predictions made by the best random forrest: \n {prediction} \n"
+        message += f" Mae for the best random forrest: {mae} \n"
+        message += f" Number of trees in the forest: {nodes} \n"
+        f.write(message)
     
 def load_data(path: str, describe: bool = False) -> DataFrame:
     """Loads a dataset from a csv file.
@@ -28,40 +40,39 @@ def load_data(path: str, describe: bool = False) -> DataFrame:
         print("Dataset details: \n", dataset.describe())
     return dataset
 
-def random_forrest_model(train_dataset: DataFrame, test_dataset: DataFrame):
-    """Creates a random forrest model using train_dataset then fits the model, evaluates it, prints the mae
-    and makes predictions with test_dataset
+def random_forest(train_dataset: DataFrame, test_size: float = 0.3, nodes: int = 100, save: bool = False):
+    X = train_dataset[HOUSE_FEATURES]
+    y = train_dataset[TARGET_PREDICTION]
+    X_train, X_test, y_train, y_test = train_test_split(X, y, random_state=1, test_size=test_size)
 
-    Args:
-        train_dataset (DataFrame): data used for training
-        test_dataset (DataFrame): data used for validation
-    """
-    # The features that will affect the house prices
-    features = ['LotArea', 'YearBuilt', '1stFlrSF', '2ndFlrSF', 'FullBath', 'BedroomAbvGr', 'TotRmsAbvGrd']
-    
-    # Training data 
-    y = train_dataset.SalePrice
-    X = train_dataset[features]
-    X = X.dropna(axis=0)
-    print(X.describe())
-
-    X_train, X_test, y_train, y_test = train_test_split(X, y, random_state=1)
-    # Validation data
-    val_data = test_dataset[features]
-
-    # Model: random forest with 100 trees
-    model = RandomForestRegressor(random_state=1)
+    model = RandomForestRegressor(
+        random_state=1,
+        n_estimators=nodes
+    )
     model.fit(X_train, y_train)
-    predictions1 = model.predict(X_test)
-    mae1 = mean_absolute_error(y_test, predictions1)
+    predictions = model.predict(X_test)
+    mae = mean_absolute_error(y_test, predictions)
 
-    predictions2 = model.predict(val_data)
+    if save:
+        with open(f"models/random_forrest_n{nodes}.pkl", 'wb') as f:
+            pickle.dump(model, f)
+    return (model, mae)
 
-    with open("log.txt", 'a') as f:
-        f.write(f"{datetime.now()}:\n MAE for training data: {mae1} \n Prediction for new data: \n {predictions2} \n")
-
-    with open('models/random_forest_model.pkl', 'wb') as f:
-        pickle.dump(model, f)
+def best_random_forest(train_dataset, validation_data, nodes_list,  test_size = 0.3, save: bool = False):
+    best_nodes = nodes_list[0]
+    best_model, min_mae = random_forest(train_dataset, nodes=nodes_list[0], test_size=test_size)
+    for nodes in nodes_list:
+        model, mae = random_forest(train_dataset=train_dataset, nodes=nodes, test_size=test_size)
+        if mae < min_mae:
+            best_nodes = nodes
+            min_mae = mae
+            best_model = model
+    if save:
+        with open(f"models/random_forrest_n{best_nodes}.pkl", 'wb') as f:
+            pickle.dump(best_model, f)
+    X_val = validation_data[HOUSE_FEATURES]
+    predictions = best_model.predict(X_val)
+    return (best_model, predictions, min_mae, best_nodes)
 
 
 if __name__ == "__main__":
