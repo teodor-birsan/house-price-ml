@@ -1,79 +1,25 @@
+from custom_models.xgboost_model import xgboost_model, order_categories
+import configparser
 import pandas as pd
-from pandas import DataFrame
-from sklearn.ensemble import RandomForestRegressor
-from sklearn.metrics import mean_absolute_error
-from sklearn.model_selection import train_test_split
-from datetime import datetime
-import pickle
 
-HOUSE_FEATURES = ['MSSubClass', 'LotArea', 'OverallQual', 'OverallCond', 'YearBuilt', 'YearRemodAdd', '1stFlrSF', 
-                  '2ndFlrSF', 'LowQualFinSF', 'GrLivArea', 'FullBath', 'HalfBath', 'BedroomAbvGr', 'KitchenAbvGr', 
-                  'TotRmsAbvGrd', 'Fireplaces', 'WoodDeckSF', 'OpenPorchSF', 'EnclosedPorch', '3SsnPorch', 'ScreenPorch', 
-                  'PoolArea', 'MiscVal', 'MoSold', 'YrSold']
+HOUSE_FEATURES = ['MSSubClass', 'MSZoning', 'LotFrontage', 'LotArea', 'Street', 'Alley', 'LotShape', 'LandContour', 'Utilities',
+                  'LotConfig', 'LandSlope', 'Condition1', 'Condition2', 'BldgType', 'HouseStyle', 'OverallQual', 'OverallCond', 
+                  'YearBuilt', 'YearRemodAdd', 'RoofStyle', 'RoofMatl', 'Exterior1st', 'Exterior2nd', 'MasVnrType', 'MasVnrArea', 
+                  'ExterQual', 'ExterCond', 'Foundation', 'BsmtQual', 'BsmtCond', 'BsmtExposure', 'BsmtFinType1', 'BsmtFinSF1', 
+                  'BsmtFinType2', 'BsmtFinSF2', 'BsmtUnfSF', 'TotalBsmtSF', 'Heating', 'HeatingQC', 'CentralAir', 'Electrical', 
+                  '1stFlrSF', '2ndFlrSF', 'LowQualFinSF', 'GrLivArea', 'BsmtFullBath', 'BsmtHalfBath', 'FullBath', 'HalfBath',
+                  'KitchenQual', 'TotRmsAbvGrd', 'Functional', 'Fireplaces', 'FireplaceQu', 'GarageType',
+                  'GarageYrBlt', 'GarageFinish', 'GarageCars', 'GarageArea', 'GarageQual', 'GarageCond', 'PavedDrive', 'WoodDeckSF', 
+                  'OpenPorchSF', 'EnclosedPorch', '3SsnPorch', 'ScreenPorch', 'PoolArea', 'PoolQC', 'Fence', 'MiscFeature', 
+                  'MiscVal', 'SaleType', 'SaleCondition']
 TARGET_PREDICTION = "SalePrice"
 
 
 def main():
-    # Load the training dataset and validation data
-    train_dataset = load_data("dataset\\train.csv")
-    test_dataset = load_data("dataset\\test.csv")
-    nodes = [3501, 3504]
-    model, prediction, mae, nodes = best_random_forest(train_dataset=train_dataset,validation_data=test_dataset, nodes_list=nodes, save=True)
-    with open("log.txt", 'a') as f:
-        message = f"{datetime.now()}: \n Predictions made by the best random forrest: \n {prediction} \n"
-        message += f" Mae for the best random forrest: {mae} \n"
-        message += f" Number of trees in the forest: {nodes} \n"
-        f.write(message)
-    
-def load_data(path: str, describe: bool = False) -> DataFrame:
-    """Loads a dataset from a csv file.
-
-    Args:
-        path (str): Path to the csv file.
-        describe (bool, optional): Boolean value used to choose whether to print or not the description of the dataset. Defaults to False.
-
-    Returns:
-        DataFrame: the dataset from the csv file
-    """
-    dataset = pd.read_csv(path)
-    if describe:
-        print("Dataset details: \n", dataset.describe())
-    return dataset
-
-def random_forest(train_dataset: DataFrame, test_size: float = 0.3, nodes: int = 100, save: bool = False):
-    X = train_dataset[HOUSE_FEATURES]
-    y = train_dataset[TARGET_PREDICTION]
-    X_train, X_test, y_train, y_test = train_test_split(X, y, random_state=1, test_size=test_size)
-
-    model = RandomForestRegressor(
-        random_state=1,
-        n_estimators=nodes
-    )
-    model.fit(X_train, y_train)
-    predictions = model.predict(X_test)
-    mae = mean_absolute_error(y_test, predictions)
-
-    if save:
-        with open(f"models/random_forrest_n{nodes}.pkl", 'wb') as f:
-            pickle.dump(model, f)
-    return (model, mae)
-
-def best_random_forest(train_dataset, validation_data, nodes_list,  test_size = 0.3, save: bool = False):
-    best_nodes = nodes_list[0]
-    best_model, min_mae = random_forest(train_dataset, nodes=nodes_list[0], test_size=test_size)
-    for nodes in nodes_list:
-        model, mae = random_forest(train_dataset=train_dataset, nodes=nodes, test_size=test_size)
-        if mae < min_mae:
-            best_nodes = nodes
-            min_mae = mae
-            best_model = model
-    if save:
-        with open(f"models/random_forrest_n{best_nodes}.pkl", 'wb') as f:
-            pickle.dump(best_model, f)
-    X_val = validation_data[HOUSE_FEATURES]
-    predictions = best_model.predict(X_val)
-    return (best_model, predictions, min_mae, best_nodes)
-
+    xgboost_model(HOUSE_FEATURES, TARGET_PREDICTION,
+                  save_to_csv=True,
+                  new_data="dataset\\test.csv",
+                  index=0)
 
 if __name__ == "__main__":
     main()
