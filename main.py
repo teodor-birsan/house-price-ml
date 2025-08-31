@@ -1,6 +1,8 @@
-from custom_models.xgboost_model import xgboost_model, order_categories
-import configparser
+from data.data import create_output, prepare_data, save_log
 import pandas as pd
+from models.basic.random_forest import best_random_forest
+from models.basic.xgboost_model import xgboost_model
+
 
 HOUSE_FEATURES = ['MSSubClass', 'MSZoning', 'LotFrontage', 'LotArea', 'Street', 'Alley', 'LotShape', 'LandContour', 'Utilities',
                   'LotConfig', 'LandSlope', 'Condition1', 'Condition2', 'BldgType', 'HouseStyle', 'OverallQual', 'OverallCond', 
@@ -16,10 +18,17 @@ TARGET_PREDICTION = "SalePrice"
 
 
 def main():
-    xgboost_model(HOUSE_FEATURES, TARGET_PREDICTION,
-                  save_to_csv=True,
-                  new_data="dataset\\test.csv",
-                  index=0)
+    training_dataset = pd.read_csv(r"dataset\train.csv", index_col=0)
+    test_dataset = pd.read_csv(r"dataset\test.csv", index_col=0)
+    dataset = prepare_data(
+        train_dataset=training_dataset,
+        test_dataset=test_dataset,
+        features=HOUSE_FEATURES,
+        target=TARGET_PREDICTION
+    )
+    mae, estimators, prediction = xgboost_model(dataset)
+    save_log(mae=mae, nodes=estimators, model_type='XGBoost Model')
+    create_output(predictions=prediction, index_list=test_dataset.index, path=r"results\house_prices_xgboost.csv")
 
 if __name__ == "__main__":
     main()
