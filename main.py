@@ -1,7 +1,6 @@
 from data.data import create_output, prepare_data, save_log
 import pandas as pd
-from models.basic.random_forest import best_random_forest
-from models.basic.xgboost_model import xgboost_model
+from models.deeplearning.model import deep_learning_model
 
 
 HOUSE_FEATURES = ['MSSubClass', 'MSZoning', 'LotFrontage', 'LotArea', 'Street', 'Alley', 'LotShape', 'LandContour', 'Utilities',
@@ -26,9 +25,9 @@ def main():
         features=HOUSE_FEATURES,
         target=TARGET_PREDICTION
     )
-    mae, estimators, prediction = xgboost_model(dataset)
-    save_log(mae=mae, nodes=estimators, model_type='XGBoost Model')
-    create_output(predictions=prediction, index_list=test_dataset.index, path=r"results\house_prices_xgboost.csv")
+    mae, prediction = deep_learning_model(dataset)
+    save_log(mae=mae, nodes=0, model_type='Deep Learning Model')
+    create_output(predictions=prediction, index_list=test_dataset.index, path=r"results\house_prices_deep_learning.csv")
 
 if __name__ == "__main__":
     main()
